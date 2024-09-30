@@ -1,0 +1,28 @@
+<form action="" onsubmit="convert(event, 'length')" id="temperature-form">
+  <div>
+    <label for="temperature">Enter the temperature to convert</label>
+    <input type="text" id="temperature" name="temperature" />
+  </div>
+
+  <div>
+    <label for=""> Unit to convert from </label>
+
+    <select name="from" id="from">
+      <option value="c">Celsius</option>
+      <option value="f">Fahrenheit</option>
+      <option value="k">Kelvin</option>
+    </select>
+  </div>
+
+  <div>
+    <label for=""> Unit to convert to </label>
+
+    <select name="to" id="to">
+      <option value="c">Celsius</option>
+      <option value="f">Fahrenheit</option>
+      <option value="k">Kelvin</option>
+    </select>
+  </div>
+
+  <button type="submit">Convert</button>
+</form>

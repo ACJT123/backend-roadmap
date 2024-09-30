@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unit Converter</title>
+    <!-- import css -->
+    <link rel="stylesheet" href="../styles/index.css" />
+  </head>
+  <body>
+    <h1>Unit Converter</h1>
+
+    <div class="tabs">
+      <button class="tabs-button active" onclick="loadForm('length.html')">
+        Length
+      </button>
+      <button class="tabs-button" onclick="loadForm('weight.html')">
+        Weight
+      </button>
+      <button class="tabs-button" onclick="loadForm('temperature.html')">
+        Temperature
+      </button>
+    </div>
+
+    <div id="form-container"></div>
+
+    <div id="result-container">
+      <h3>Result of your calculation</h3>
+
+      <p id="result-text"></p>
+
+      <button onclick="reset()">Reset</button>
+    </div>
+
+    <script src="../scripts/index.js"></script>
+  </body>
+</html>
