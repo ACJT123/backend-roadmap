@@ -12,3 +12,6 @@ https://roadmap.sh/projects/todo-list-api
 
 // weather api
 https://roadmap.sh/projects/weather-api-wrapper-service
+
+// expense tracker api
+https://roadmap.sh/projects/expense-tracker-api
