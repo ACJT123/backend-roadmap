@@ -15,3 +15,6 @@ https://roadmap.sh/projects/weather-api-wrapper-service
 
 // expense tracker api
 https://roadmap.sh/projects/expense-tracker-api
+
+// markdown note taking app
+https://roadmap.sh/projects/markdown-note-taking-app

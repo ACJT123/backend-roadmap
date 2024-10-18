@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+
+    <script defer>
+      // Fetch the notes from the server
+      async function getNotes() {
+        try {
+          const response = await axios.get("http://localhost:3000/notes");
+          return response.data;
+        } catch (error) {
+          console.error("Error fetching notes:", error);
+          return [];
+        }
+      }
+
+      // Display the notes in the table
+      function displayNotes(notes) {
+        const tbody = document.querySelector("tbody");
+
+        if (notes.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='3'>No notes available</td></tr>";
+          return;
+        }
+
+        // Fragment to minimize reflow/repaint during DOM update
+        const fragment = document.createDocumentFragment();
+
+        notes.forEach((n) => {
+          const tr = document.createElement("tr");
+          const tdFileId = document.createElement("td");
+          const tdFileName = document.createElement("td");
+          const tdActions = document.createElement("td");
+
+          tdFileId.textContent = n.id;
+          tdFileName.textContent = n.name;
+
+          // Grammar check button
+          const checkGrammarBtn = document.createElement("button");
+          checkGrammarBtn.classList.add("check-grammar");
+          checkGrammarBtn.textContent = "Check Grammar";
+          checkGrammarBtn.addEventListener("click", () =>
+            handleGrammarCheck(n.id)
+          );
+
+          // View markdown button
+          const viewMarkdownBtn = document.createElement("button");
+          viewMarkdownBtn.classList.add("view-markdown");
+          viewMarkdownBtn.textContent = "View";
+          viewMarkdownBtn.addEventListener("click", () =>
+            window.open(`render-html.html?id=${n.id}`)
+          );
+
+          // Delete button
+          const deleteBtn = document.createElement("button");
+          deleteBtn.classList.add("delete");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.addEventListener("click", async () => {
+            try {
+              await axios.delete(`http://localhost:3000/notes/${n.id}`);
+              tr.remove();
+            } catch (error) {
+              alert("Error deleting note, please try again.");
+              console.error("Error deleting note:", error);
+            }
+          });
+
+          tdActions.appendChild(checkGrammarBtn);
+          tdActions.appendChild(viewMarkdownBtn);
+          tdActions.appendChild(deleteBtn);
+
+          tr.appendChild(tdFileId);
+          tr.appendChild(tdFileName);
+          tr.appendChild(tdActions);
+
+          fragment.appendChild(tr);
+        });
+
+        // Append all rows at once to avoid multiple reflows
+        tbody.appendChild(fragment);
+      }
+
+      // Handle grammar check and show popup
+      async function handleGrammarCheck(noteId) {
+        const popup = document.getElementById("checkGrammarPopup");
+        popup.style.display = "flex";
+
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/check-grammar/${noteId}`
+          );
+          alert(response.data.message);
+        } catch (error) {
+          alert("Error checking grammar, please try again.");
+          console.error("Error fetching grammar check:", error);
+        } finally {
+          popup.style.display = "none";
+        }
+      }
+
+      // Handle form submission
+      async function handleSubmit(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(event.target); // Use event.target to get the form data
+
+        try {
+          const response = await axios.post(
+            "http://localhost:3000/upload",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          alert(response.data.message);
+
+          // Fetch and display updated notes
+          const notes = await getNotes();
+          displayNotes(notes);
+        } catch (error) {
+          alert("Error uploading file, please try again.");
+          console.error("Error uploading file:", error);
+        }
+      }
+
+      // Initialize the page
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Hide the popup initially
+        document.getElementById("checkGrammarPopup").style.display = "none";
+
+        const notes = await getNotes();
+        displayNotes(notes);
+      });
+    </script>
+  </head>
+  <body>
+    <form
+      enctype="multipart/form-data"
+      method="post"
+      onsubmit="return handleSubmit(event)"
+    >
+      <input type="file" name="markdown" id="markdown" required accept=".md" />
+      <button type="submit">Submit</button>
+    </form>
+
+    <section>
+      <h1>Notes</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>File ID</th>
+            <th>File Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="checkGrammarPopup">
+      <div class="content">
+        <span class="loader"></span>
+        <p>Checking grammar...</p>
+      </div>
+    </section>
+  </body>
+</html>

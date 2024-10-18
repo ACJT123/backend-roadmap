@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
+        async function renderHtml() {
+          const params = new URLSearchParams(window.location.search);
+
+          const id = params.get("id");
+
+          const response = await axios.get(
+            `http://localhost:3000/notes/render-html/${id}`
+          );
+
+          document.body.innerHTML = response.data;
+
+          document.title = id;
+        }
+
+        renderHtml();
+      });
+    </script>
+  </head>
+  <body></body>
+</html>
