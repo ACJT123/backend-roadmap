@@ -1,6 +1,16 @@
 const jwt = require("jsonwebtoken");
 const { signToken } = require("../libs/jwt");
 
+const requestValidator = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required");
+  }
+
+  next();
+};
+
 const verifyToken = (req, res, next) => {
   // Ensure the Authorization header exists
   if (
@@ -22,12 +32,10 @@ const verifyToken = (req, res, next) => {
         // Attach userId to request and send new token
         req.userId = decoded.userId;
         res.setHeader("Authorization", `Bearer ${newToken}`);
-        return res
-          .status(401)
-          .send({
-            message: "Token expired. New token issued.",
-            token: newToken,
-          });
+        return res.status(401).send({
+          message: "Token expired. New token issued.",
+          token: newToken,
+        });
       } else {
         // Token is invalid for another reason
         return res.status(403).send("Invalid token");
@@ -40,4 +48,4 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken };
+module.exports = { requestValidator, verifyToken };
