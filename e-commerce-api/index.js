@@ -23,8 +23,10 @@ mongoose
   });
 
 const authController = require("./controllers/auth");
+const productsController = require("./controllers/products");
 
 app.use("/api/auth", authController);
+app.use("/api/products", productsController);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
