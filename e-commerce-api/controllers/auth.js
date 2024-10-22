@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { login, signUp } = require("../services/auth");
-const requestValidator = require("../middlewares/requestValidator");
+const { requestValidator } = require("../middlewares/auth");
 
 router.post("/login", requestValidator, async (req, res, next) => {
   const { email, password } = req.body;
