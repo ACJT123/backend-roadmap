@@ -14,7 +14,7 @@ const login = async (email, password) => {
     throw new Error("Invalid password");
   }
 
-  return signToken(user._id);
+  return signToken({ userId: user._id });
 };
 
 const signUp = async (email, password) => {
@@ -22,7 +22,7 @@ const signUp = async (email, password) => {
 
   await user.save();
 
-  return signToken(user._id);
+  return signToken({ userId: user._id });
 };
 
 module.exports = {
