@@ -36,18 +36,20 @@ router.post("/", async (req, res, next) => {
       .json({ message: "productId and quantity are required" });
   }
   try {
-    const isProductExist = await getProduct(productId);
+    const product = await getProduct(productId);
 
-    if (!isProductExist) {
+    if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    const priceId = product.default_price;
+
     if (dec) {
-      const message = await decQuantity(userId, productId, quantity);
+      const message = await decQuantity(userId, productId, priceId, quantity);
       return res.status(400).json({ message });
     }
 
-    await updateCart(userId, productId, quantity);
+    await updateCart(userId, productId, priceId, quantity);
     res.status(201).json({ message: "Product added to cart" });
   } catch (error) {
     next(error);

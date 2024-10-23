@@ -5,10 +5,10 @@ const getCart = async (userId) => {
   return cart || []; // return an empty array if no cart exists
 };
 
-const updateCart = async (userId, productId, quantity) => {
+const updateCart = async (userId, productId, priceId, quantity) => {
   // Attempt to increment quantity if product exists in cart
   const cart = await Cart.findOneAndUpdate(
-    { userId, "products.productId": productId },
+    { userId, "products.productId": productId, "products.priceId": priceId },
     { $inc: { "products.$.quantity": quantity } }
   );
 
@@ -16,7 +16,7 @@ const updateCart = async (userId, productId, quantity) => {
   if (!cart) {
     await Cart.findOneAndUpdate(
       { userId },
-      { $push: { products: { productId, quantity } } },
+      { $push: { products: { productId, priceId, quantity } } },
       { upsert: true } // Create the cart if it doesn't exist
     );
   }
@@ -29,25 +29,31 @@ const removeProductFromCart = async (userId, productId) => {
   );
 };
 
-const decQuantity = async (userId, productId, quantity) => {
+const decQuantity = async (userId, productId, priceId, quantity) => {
   if (quantity <= 0) {
     throw new Error("Quantity must be greater than 0");
   }
 
   // Find the cart with the specific product
-  const cart = await Cart.findOne({ userId, "products.productId": productId });
+  const cart = await Cart.findOne({
+    userId,
+    "products.productId": productId,
+    "products.priceId": priceId,
+  });
 
   if (!cart) {
     return "Cart not found or product not in cart";
   }
 
-  const product = cart.products.find((p) => p.productId === productId);
+  const product = cart.products.find(
+    (p) => p.productId === productId && p.priceId === priceId
+  );
   const leftQuantity = product.quantity - quantity;
 
   if (leftQuantity > 0) {
     // If left quantity is positive, decrement it
     await Cart.findOneAndUpdate(
-      { userId, "products.productId": productId },
+      { userId, "products.productId": productId, "products.priceId": priceId },
       { $set: { "products.$.quantity": leftQuantity } }
     );
     return "Product quantity decreased";

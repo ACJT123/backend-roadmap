@@ -7,6 +7,7 @@ const cartSchema = new Schema(
     products: [
       {
         productId: { type: String, required: true },
+        priceId: { type: String, required: true },
         quantity: { type: Number, default: 1 },
       },
     ],
