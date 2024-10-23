@@ -27,3 +27,6 @@ https://roadmap.sh/projects/broadcast-server
 
 // e-commerce api
 https://roadmap.sh/projects/ecommerce-api
+
+// scalable e-commerce platform
+https://roadmap.sh/projects/scalable-ecommerce-platform
