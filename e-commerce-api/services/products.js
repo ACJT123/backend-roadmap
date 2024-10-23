@@ -14,6 +14,10 @@ const getProducts = async (limit) => {
   return products.data;
 };
 
+const getProduct = async (productId) => {
+  return await stripe.products.retrieve(productId);
+};
+
 const _getPriceById = async (priceId) => {
   const price = await stripe.prices.retrieve(priceId);
 
@@ -22,4 +26,5 @@ const _getPriceById = async (priceId) => {
 
 module.exports = {
   getProducts,
+  getProduct,
 };
